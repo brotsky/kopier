@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+    </head>
+    
+<body>
+<style type="text/css">
+	#mainPopup {
+		padding: 10px;
+		height: 500px;
+		width: 400px;
+		font-family: Helvetica, Ubuntu, Arial, sans-serif;
+	}
+	h1 {
+		font-size: 2em;
+	}
+	
+	ul {
+    	padding: 0;
+	}
+	ul li {
+    	list-style: none;
+    	margin-bottom: 10px;
+	}
+	
+	p.text {
+    	height: 19px;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+    	white-space: nowrap;
+	}
+	
+</style>
+
+<div id="mainPopup">
+<h1>Kopier</h1>
+<div id="target">Loading...</div>
+<script id="template" type="x-tmpl-mustache">
+    <ul class="list-group">
+    {{#kopiers}}
+        <li class="list-group-item" data-kopy-key="{{key}}">
+            <p class="text">{{textRaw}}</p>
+            <div>
+                <button class="btn btn-success copyHTML" data-kopy-content="{{selectionHTML}}">Kopy Formatted</button>
+                <button class="btn btn-success copyText" data-kopy-content="{{text}}">Kopy Plain</button>
+                <button class="btn btn-danger delete" data-kopy-key="{{key}}">Trash</button>
+            </div>
+        </li>
+    {{/kopiers}}
+    </ul>
+</script>
+
+
+<html-kopier></html-kopier>
+
+</div>
+
+
+        <script src='/js/jquery/jquery.min.js'></script>
+        <script src='/js/clipboard/clipboard.min.js'></script>
+        <script src='/js/mustache/mustache.min.js'></script>
+        <script src='/src/browser_action/browser_action.js'></script>
+
+</body>
+</html>

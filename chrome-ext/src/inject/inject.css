@@ -1,0 +1,10 @@
+/**
+ * Place your custom CSS styles here.
+ **/
+
+#kopier-controls-container {
+    background: green;
+    width: 24px;
+    height: 24px;
+    position: fixed;
+}
