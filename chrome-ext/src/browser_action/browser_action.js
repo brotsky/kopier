@@ -105,3 +105,17 @@ chrome.extension.onRequest.addListener(function(request, sender, callback) {
      //   callback(selectedContentJSON());
     }
 });
+
+$("#login form").submit(function(e){
+    e.preventDefault();
+    
+    $.ajax({
+        url : "http://localhost:8000/kopier/api/login-api.php",
+        method : "POST",
+        data : $(this).serialize(),
+        success : function(data){
+            console.log(data);
+        }
+    })
+    
+});
