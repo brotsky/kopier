@@ -1,3 +1,5 @@
+$ = jQuery;
+
 var kopierList = [];
 
 function utf8_to_b64( str ) {
@@ -42,6 +44,40 @@ function saveChanges(source) {
   //    message('Error: No value specified');
       return;
     }
+    
+    chrome.storage.local.get(['kopierToken'], function (result) {    
+            
+        console.log(result);
+        
+        if(typeof result.kopierToken != "undefined") {
+        
+            kopierToken = result.kopierToken;
+            
+            if(kopierToken) {
+                
+                var snippet = {
+                    html : "html goes here",
+                    text : "text goes here",
+                    images : "images",
+                    copied_from : "url"
+                }
+                
+                
+                $.ajax({
+                    url : "http://localhost:8000/kopier/api/snippet-api.php",
+                    headers : {
+                        "Authorization" : "Bearer " + kopierToken
+                        },
+                    method : "POST",
+                    data : snippet,
+                    success : function(data) {
+                        console.log(data);
+                    }
+                });
+            
+            }
+        }
+    });
      
     if(kopierList.length > 10)
         kopierList.shift();
@@ -54,6 +90,10 @@ function saveChanges(source) {
     chrome.storage.local.set({'kopierData': JSON.stringify(kopierList) }, function() {
         //after data is stored
                 
+        
+        
+        
+        
         
     });
   }

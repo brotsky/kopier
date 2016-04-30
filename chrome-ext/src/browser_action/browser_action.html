@@ -31,33 +31,59 @@
     	white-space: nowrap;
 	}
 	
+	#wrongpassword {
+    	padding: 15px;
+	}
+	
 </style>
 
 <div id="mainPopup">
-    <button class="btn btn-primary pull-right" type="button" data-toggle="collapse" data-target="#login" aria-expanded="false">Login</button>
-<h1>Kopier</h1>
 
-<div class="collapse" id="login">
-<form class="form-horizontal">
-  <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control" id="name" name="name" placeholder="Username">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-    <div class="col-sm-10">
-      <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Sign in</button> or sign up at <a href="http://localhost:8000/kopier/api/" target="_blank">kopierapp.com</a>
-    </div>
-  </div>
-</form>
-</div>
+
+
+<div id="userTarget"></div>
+<script id="userTemplate" type="x-tmpl-mustache">
+    {{#kopierToken}}
+
+
+        <button id="logout" class="btn btn-primary pull-right" type="button">Logout</button>
+        <h1>Kopier</h1>
+        <p>Hello, {{kopierUser.display_name}}</p>
+
+    {{/kopierToken}}
+    {{^kopierToken}}
+    
+        <button class="btn btn-primary pull-right" type="button" data-toggle="collapse" data-target="#login" aria-expanded="false">Login</button>
+        <h1>Kopier</h1>
+        
+        <div class="collapse" id="login">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Username">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-default">Sign in</button> or sign up at <a href="http://localhost:8000/kopier/api/" target="_blank">kopierapp.com</a>
+                </div>
+              </div>
+              
+              <p id="wrongpassword" class="has-error bg-danger hide">Incorrect User or Password</p>
+              
+            </form>
+        </div>
+        
+    {{/kopierToken}}
+</script>
+
 <div id="target">Loading...</div>
 <script id="template" type="x-tmpl-mustache">
     <ul class="list-group">

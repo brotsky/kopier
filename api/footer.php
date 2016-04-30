@@ -92,10 +92,9 @@ echo "
 					<div class="span8">
 						<a href="#">Terms of Service</a>    
 						<a href="#">Privacy</a>    
-						<a href="#">Security</a>
 					</div>
 					<div class="span4">
-						<p class="muted pull-right">© 2013 Company Name. All rights reserved</p>
+						<p class="muted pull-right">© <?php echo date("Y"); ?> Kopier. All rights reserved</p>
 					</div>
 				</div>
 			</div>

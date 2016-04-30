@@ -3,6 +3,10 @@ $ = jQuery;
 
 var kopierList = [];
 
+var kopierUser = [];
+
+var kopierToken = false;
+
 function utf8_to_b64( str ) {
     return window.btoa(unescape(encodeURIComponent( str )));
 }
@@ -12,10 +16,9 @@ function b64_to_utf8( str ) {
 }
 
 function updateKopier() {
-        chrome.storage.local.set({'kopierData': JSON.stringify(kopierList) }, function() {
+    chrome.storage.local.set({'kopierData': JSON.stringify(kopierList) }, function() {
         //after data is stored
                 
-        
     });
 }
 
@@ -31,6 +34,38 @@ function removeFromKopierList(key) {
     updateKopier();
     
     renderTemplate();
+}
+
+function checkUser() {
+    chrome.storage.local.get(['kopierUser'], function (result) {    
+        if(typeof result.kopierUser != "undefined") {
+            kopierUser = JSON.parse(result.kopierUser);                
+        } else {
+            kopierUser = [];
+        }
+        chrome.storage.local.get(['kopierToken'], function (result) {    
+            
+            console.log(result);
+            
+            if(typeof result.kopierToken != "undefined") {
+            
+                kopierToken = result.kopierToken;
+                    
+            } else {
+                kopierToken = false;
+            }
+            
+            var userTemplate = $('#userTemplate').html();
+            Mustache.parse(userTemplate);   // optional, speeds up future uses
+            var rendered = Mustache.render(userTemplate, {kopierUser: kopierUser, kopierToken : kopierToken});
+            $('#userTarget').html(rendered);
+            
+            
+        });
+                
+    });
+    
+
 }
 
 function renderTemplate() {
@@ -85,6 +120,8 @@ chrome.storage.local.get(['kopierData'], function (result) {
             kopierList[i].key = kopierList.length - i - 1;
         }
         
+        checkUser();
+        
         renderTemplate();        
     }
     
@@ -106,7 +143,7 @@ chrome.extension.onRequest.addListener(function(request, sender, callback) {
     }
 });
 
-$("#login form").submit(function(e){
+$("html").on("submit","#login form",function(e){
     e.preventDefault();
     
     $.ajax({
@@ -114,8 +151,45 @@ $("#login form").submit(function(e){
         method : "POST",
         data : $(this).serialize(),
         success : function(data){
-            console.log(data);
+            
+            if(typeof data.error == "undefined") {
+                $("#wrongpassword").addClass("hide");       
+                chrome.storage.local.set({'kopierUser': JSON.stringify(data.user) }, function() {
+                    
+                    chrome.storage.local.set({'kopierToken': data.token }, function() {                        
+                        checkUser();
+                    });
+                                    
+                });
+            
+            } else {
+                $("#wrongpassword").removeClass("hide");
+            }
+            
         }
     })
     
 });
+
+$("html").on("click","#logout",function(e){
+    e.preventDefault();
+    chrome.storage.local.set({'kopierUser': false }, function() {
+                
+        chrome.storage.local.set({'kopierToken': false }, function() {
+            
+            
+            kopierList = [];
+            chrome.storage.local.set({'kopierData': JSON.stringify(kopierList) }, function() {
+                //after data is stored
+                
+                checkUser();
+                renderTemplate();
+                
+            });
+            
+            
+        });
+                                
+    });
+});
+
