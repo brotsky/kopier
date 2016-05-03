@@ -69,6 +69,7 @@ if(!$user->islg() && isset($_COOKIE['user']) && isset($_COOKIE['pass'])) {
 }
 
 function encode_token($str) {
+    
     return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(KOPIER_SALT), $str, MCRYPT_MODE_CBC, md5(md5(KOPIER_SALT))));
 }
 
@@ -80,7 +81,7 @@ function encode_id($str) {
     return alphaID($str);
 }
 
-function decode_id($str) {
+function decode_id($str) {    
     return alphaID($str, true);
 }
 
@@ -113,6 +114,9 @@ function alphaID($in, $to_num = false, $pad_up = false, $pass_key = null)
   }
 
   if ($to_num) {
+      
+    
+      
     // Digital number  <<--  alphabet letter code
     $len = strlen($in) - 1;
 
@@ -128,7 +132,9 @@ function alphaID($in, $to_num = false, $pad_up = false, $pass_key = null)
         $out -= pow($base, $pad_up);
       }
     }
+        
   } else {
+            
     // Digital number  -->>  alphabet letter code
     if (is_numeric($pad_up)) {
       $pad_up--;
@@ -144,6 +150,7 @@ function alphaID($in, $to_num = false, $pad_up = false, $pass_key = null)
       $out = $out . substr($index, $a, 1);
       $in  = $in - ($a * $bcp);
     }
+    
   }
 
   return $out;

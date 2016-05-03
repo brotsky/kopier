@@ -1,10 +1,17 @@
 $ = jQuery;
 
+var kopierList = [];
+
 function utf8_to_b64( str ) {
+    
+    //we need to write a better fix for this
+  //  var fix = str.replace(/$|;/g, 'REPLACED KOPIER CHARACTER');
+        
     return window.btoa(unescape(encodeURIComponent( str )));
 }
 
 function b64_to_utf8( str ) {
+        
     return decodeURIComponent(escape(window.atob( str )));
 }
 
@@ -52,7 +59,8 @@ var selectedContentJSON = function() {
     var data = {
         "selectionHTML" : utf8_to_b64(htmlData.html),
         "text" : utf8_to_b64(document.getSelection().toString()),
-        "images" : htmlData.images
+        "images" : htmlData.images,
+        "copied_from" : window.location.href
     }
     
     return JSON.stringify(data);
@@ -72,22 +80,17 @@ chrome.extension.onRequest.addListener(function(request, sender, callback) {
 });
 
 
- chrome.storage.onChanged.addListener(function(changes, namespace) {
-        
-        console.log(JSON.parse( changes.kopierData.newValue) );
-        return;
-        for (key in changes) {
-          var storageChange = changes[key];
-          
-          
-          
-          console.log('Storage key "%s" in namespace "%s" changed. ' +
-                      'Old value was "%s", new value is "%s".',
-                      key,
-                      namespace,
-                      storageChange.oldValue,
-                      storageChange.newValue);
-        }
-      });
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    if(typeof changes.kopierData != "undefined")
+        kopierList = JSON.parse( changes.kopierData.newValue);        
+});
 
+
+var s = new Snippet();
+
+s.setOrder(10);
+
+s.setText("yooooo fdsafads sdfasd fsdaf s ojj asdff yooooo fdsafads sdfasd fsdaf s ojj asdff yooooo fdsafads sdfasd fsdaf s ojj asdff yooooo fdsafads sdfasd fsdaf s ojj asdff yooooo fdsafads sdfasd fsdaf s ojj asdff");
+
+console.log(s.getData());
 

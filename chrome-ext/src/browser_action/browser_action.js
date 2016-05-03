@@ -153,7 +153,30 @@ $("html").on("submit","#login form",function(e){
         success : function(data){
             
             if(typeof data.error == "undefined") {
-                $("#wrongpassword").addClass("hide");       
+                $("#wrongpassword").addClass("hide");    
+                                   
+                for(var i = 0 ; i < kopierList.length ; i++) {   
+                                        
+                    var snippet = {
+                        html : kopierList[i].selectionHTML,
+                        text : kopierList[i].text,
+                        images : kopierList[i].images,
+                        copied_from : kopierList[i].copied_from
+                    }
+                
+                    $.ajax({
+                        url : "http://localhost:8000/kopier/api/snippet-api.php",
+                        headers : {
+                            "Authorization" : "Bearer " + kopierToken
+                            },
+                        method : "POST",
+                        data : snippet,
+                        success : function(data) {
+                            console.log(data);
+                        }
+                    });
+                }
+                   
                 chrome.storage.local.set({'kopierUser': JSON.stringify(data.user) }, function() {
                     
                     chrome.storage.local.set({'kopierToken': data.token }, function() {                        
@@ -161,6 +184,30 @@ $("html").on("submit","#login form",function(e){
                     });
                                     
                 });
+                setTimeout(function(){
+                    $.ajax({
+                        url : "http://localhost:8000/kopier/api/snippet-api.php",
+                        headers : {
+                            "Authorization" : "Bearer " + kopierToken
+                            },
+                        method : "GET",
+                        success : function(data) {
+                            console.log(data);
+                            
+                            kopierList = data;
+                            
+                            for(var i = 0 ; i < kopierList.length ; i++) {
+                                kopierList[i].textRaw = b64_to_utf8(kopierList[i].text);
+                                kopierList[i].selectionHTMLRaw = b64_to_utf8(kopierList[i].selectionHTML);
+                                kopierList[i].key = kopierList.length - i - 1;
+                            }
+                            
+                            updateKopier();
+                            renderTemplate();
+                        }
+                    });
+                },500);
+                
             
             } else {
                 $("#wrongpassword").removeClass("hide");
@@ -193,3 +240,7 @@ $("html").on("click","#logout",function(e){
     });
 });
 
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    if(typeof changes.kopierData != "undefined")
+        kopierList = JSON.parse( changes.kopierData.newValue);        
+});

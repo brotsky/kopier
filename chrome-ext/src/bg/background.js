@@ -47,7 +47,7 @@ function saveChanges(source) {
     
     chrome.storage.local.get(['kopierToken'], function (result) {    
             
-        console.log(result);
+        console.log(source);
         
         if(typeof result.kopierToken != "undefined") {
         
@@ -55,11 +55,13 @@ function saveChanges(source) {
             
             if(kopierToken) {
                 
+                
+                
                 var snippet = {
-                    html : "html goes here",
-                    text : "text goes here",
-                    images : "images",
-                    copied_from : "url"
+                    html : b64_to_utf8(source.selectionHTML),
+                    text : b64_to_utf8(source.text),
+                    images : source.images,
+                    copied_from : source.copied_from
                 }
                 
                 
@@ -126,3 +128,8 @@ function kopySelectedContent(info)
 }
 
 chrome.contextMenus.create({title: "Kopy (⌘ + K)", contexts:["all"], onclick: kopySelectedContent});
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    if(typeof changes.kopierData != "undefined")
+        kopierList = JSON.parse( changes.kopierData.newValue);        
+});
